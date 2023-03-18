@@ -127,3 +127,5 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+!/conf/service-account.json
+/conf/service-account.json

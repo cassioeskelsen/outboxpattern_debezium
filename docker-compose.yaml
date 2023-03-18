@@ -1,0 +1,25 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:14
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: debezium
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    command: postgres -c wal_level=logical
+
+  debezium-server:
+    image: quay.io/debezium/server:2.2
+    container_name: debezium-server
+    environment:
+      GOOGLE_APPLICATION_CREDENTIALS: /tmp/credentials/service-account.json
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./conf/service-account.json:/tmp/credentials/service-account.json
+      - ./conf:/debezium/conf
+    depends_on:
+      - db
